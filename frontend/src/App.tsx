@@ -1,3 +1,54 @@
+import React from "react";
+import { Clone } from "../wailsjs/go/backend/Git";
+import { GetUserHomeDir } from "../wailsjs/go/backend/FS";
+import { getMessageFromError } from "./utils/errors";
+import { TextField } from "./components/atoms/TextField";
+import { Spinner } from "./components/atoms/Spinner";
+import { Alert } from "./components/atoms/Alert";
+
 export const App = () => {
-  return <div></div>;
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [successMessage, setSuccessMessage] = React.useState<string>("");
+  const [errorMessage, setErrorMessage] = React.useState<string>("");
+  const [url, setUrl] = React.useState<string>("");
+  const [dir, setDir] = React.useState<string>("");
+
+  React.useEffect(() => {
+    (async () => {
+      setDir(await GetUserHomeDir());
+    })();
+  }, []);
+
+  async function clone() {
+    try {
+      setLoading(true);
+      setSuccessMessage("");
+      setErrorMessage("");
+      await Clone(url, dir);
+      setSuccessMessage("Cloned successfully");
+    } catch (err) {
+      setErrorMessage(getMessageFromError(err));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="container w-1/3 px-4 py-4 grid grid-cols-1 gap-4">
+      <TextField label="URL" value={url} onChange={setUrl} />
+      <TextField label="Folder" value={dir} onChange={setDir} />
+      {loading ? (
+        <Spinner />
+      ) : (
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full justify-self-start"
+          onClick={clone}
+        >
+          Clone
+        </button>
+      )}
+      {successMessage && <Alert variant="success">{successMessage}</Alert>}
+      {errorMessage && <Alert variant="error">{errorMessage}</Alert>}
+    </div>
+  );
 };
