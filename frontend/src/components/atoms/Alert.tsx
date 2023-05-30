@@ -1,3 +1,4 @@
+import { MdErrorOutline, MdOutlineCheckCircle } from "react-icons/md";
 import { AlertProps } from "./Alert.d";
 
 const mapping = {
@@ -7,11 +8,14 @@ const mapping = {
 
 export const Alert = ({ children, variant }: AlertProps) => {
   const color = mapping[variant];
+
   return (
     <div
-      className={`${color} border px-4 py-3 rounded relative`}
+      className={`${color} border px-4 py-3 rounded-lg flex items-center gap-2`}
       role="alert"
     >
+      {variant === "success" && <MdOutlineCheckCircle />}
+      {variant === "error" && <MdErrorOutline />}
       <span className="block sm:inline">{children}</span>
     </div>
   );
