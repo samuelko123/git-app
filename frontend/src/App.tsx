@@ -3,8 +3,8 @@ import { Clone } from "../wailsjs/go/backend/Git";
 import { GetUserHomeDir } from "../wailsjs/go/backend/FS";
 import { getMessageFromError } from "./utils/errors";
 import { TextField } from "./components/atoms/TextField";
-import { Spinner } from "./components/atoms/Spinner";
 import { Alert } from "./components/atoms/Alert";
+import { Button } from "./components/atoms/Button";
 
 export const App = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -37,16 +37,11 @@ export const App = () => {
     <div className="container w-1/3 px-4 py-4 grid grid-cols-1 gap-4">
       <TextField label="URL" value={url} onChange={setUrl} />
       <TextField label="Folder" value={dir} onChange={setDir} />
-      {loading ? (
-        <Spinner />
-      ) : (
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full justify-self-start"
-          onClick={clone}
-        >
+      <div className="justify-self-start">
+        <Button isLoading={loading} onClick={clone}>
           Clone
-        </button>
-      )}
+        </Button>
+      </div>
       {successMessage && <Alert variant="success">{successMessage}</Alert>}
       {errorMessage && <Alert variant="error">{errorMessage}</Alert>}
     </div>
