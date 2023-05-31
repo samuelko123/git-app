@@ -1,8 +1,7 @@
 import { ReactElement } from "react";
 
-export type ModalProps = {
+export type DialogProps = {
   header: string;
   children: ReactElement;
-  show: boolean;
-  setShow: (value: boolean) => void;
+  triggerButton: ReactElement;
 };
