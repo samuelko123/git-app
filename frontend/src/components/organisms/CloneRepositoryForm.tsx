@@ -1,25 +1,28 @@
-import React from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Clone } from "../../../wailsjs/go/backend/Git";
 import { GetUserHomeDir } from "../../../wailsjs/go/backend/FS";
 import { getMessageFromError } from "../../utils/errors";
 import { TextField } from "../atoms/TextField";
 import { Alert } from "../atoms/Alert";
 import { Button } from "../atoms/Button";
+import { Root, Submit } from "@radix-ui/react-form";
 
 export const CloneRepositoryForm = () => {
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const [successMessage, setSuccessMessage] = React.useState<string>("");
-  const [errorMessage, setErrorMessage] = React.useState<string>("");
-  const [url, setUrl] = React.useState<string>("");
-  const [dir, setDir] = React.useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [successMessage, setSuccessMessage] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [url, setUrl] = useState<string>("");
+  const [dir, setDir] = useState<string>("");
 
-  React.useEffect(() => {
+  useEffect(() => {
     (async () => {
       setDir(await GetUserHomeDir());
     })();
   }, []);
 
-  async function clone() {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    
     try {
       setLoading(true);
       setSuccessMessage("");
@@ -34,16 +37,32 @@ export const CloneRepositoryForm = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6">
-      <TextField label="URL" value={url} onChange={setUrl} />
-      <TextField label="Folder" value={dir} onChange={setDir} />
-      <div className="justify-self-start">
-        <Button isLoading={loading} onClick={clone}>
+    <Root onSubmit={handleSubmit} className="grid grid-cols-1 gap-8">
+      <TextField
+        required
+        name="url"
+        label="Repository URL"
+        value={url}
+        onChange={setUrl}
+      />
+      <TextField
+        required
+        name="dir"
+        label="Folder Path"
+        value={dir}
+        onChange={setDir}
+      />
+      <Submit asChild>
+        <Button
+          type="submit"
+          className="justify-self-start"
+          isLoading={loading}
+        >
           Clone
         </Button>
-      </div>
+      </Submit>
       {successMessage && <Alert variant="success">{successMessage}</Alert>}
       {errorMessage && <Alert variant="error">{errorMessage}</Alert>}
-    </div>
+    </Root>
   );
 };

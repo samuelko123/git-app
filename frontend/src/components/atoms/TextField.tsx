@@ -1,26 +1,38 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, forwardRef } from "react";
 import { TextFieldProps } from "./TextField.d";
+import { Control, Field, Label, Message } from "@radix-ui/react-form";
 
-export const TextField = ({
-  label,
-  value,
-  onChange,
-}: TextFieldProps) => {
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (onChange) {
-      onChange(e.target.value);
-    }
-  };
+export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
+  ({ label, value, onChange, name, ...otherProps }, ref) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+      if (onChange) {
+        onChange(e.target.value);
+      }
+    };
 
-  return (
-    <label className="block text-sm font-medium text-gray-900 dark:text-white">
-      {label}
-      <input
-        type="text"
-        value={value}
-        onChange={handleChange}
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-      />
-    </label>
-  );
-};
+    return (
+      <Field
+        name={name}
+        className="data-[invalid=true]:text-red-600 data-[invalid=true]:border-red-600"
+      >
+        <div className="flex justify-between items-baseline">
+          <Label>{label}</Label>
+          <Message className="text-sm" match="valueMissing">
+            Required
+          </Message>
+        </div>
+        <Control asChild>
+          <input
+            ref={ref}
+            type="text"
+            value={value}
+            onChange={handleChange}
+            autoComplete="password"
+            className="text-black border-2 border-solid border-gray-400 focus:border-blue-600 outline-none rounded-lg data-[invalid=true]:border-red-600 block w-full p-2.5"
+            {...otherProps}
+          />
+        </Control>
+      </Field>
+    );
+  }
+);
