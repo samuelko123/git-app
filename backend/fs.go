@@ -1,12 +1,16 @@
 package backend
 
 import (
+	"context"
 	"io"
 	"os"
 	"path/filepath"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type FS struct {
+	ctx context.Context
 }
 
 func NewFS() *FS {
@@ -50,4 +54,12 @@ func (f *FS) Exists(dirPath string) bool {
 
 func (f *FS) PathJoin(path1 string, path2 string) string {
 	return filepath.Join(path1, path2)
+}
+
+func (f *FS) SetContext(ctx context.Context) {
+	f.ctx = ctx
+}
+
+func (f *FS) OpenDirectoryDialog() (string, error) {
+	return runtime.OpenDirectoryDialog(f.ctx, runtime.OpenDialogOptions{})
 }

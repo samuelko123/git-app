@@ -6,6 +6,8 @@ export type TextFieldProps = Override<
   HTMLProps<HTMLInputElement>,
   {
     name: string;
-    onChange?: (val: string) => void;
+    variant?: "folder-picker";
+    onChange: (val: string) => void;
+    onError: (err: unknown) => void;
   }
 >;

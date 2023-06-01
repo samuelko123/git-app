@@ -81,21 +81,29 @@ export const CloneRepositoryForm = () => {
     }
   };
 
+  const handleError = (err: unknown) => {
+    const message = getMessageFromError(err);
+    setErrorMessage(message);
+  };
+
   return (
-    <Root onSubmit={handleSubmit} className="grid grid-cols-1 gap-8">
+    <Root onSubmit={handleSubmit} className="grid grid-cols-1 gap-8 w-[36rem]">
       <TextField
         required
         name="url"
         label="Repository URL"
         value={url}
         onChange={handleUrlChange}
+        onError={handleError}
       />
       <TextField
+        variant="folder-picker"
         required
         name="dir"
         label="Folder Path"
         value={folder}
         onChange={handleFolderChange}
+        onError={handleError}
       />
       <Submit asChild>
         <Button

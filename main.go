@@ -26,6 +26,7 @@ func main() {
 		StartHidden:       false,
 		HideWindowOnClose: false,
 		AlwaysOnTop:       false,
+		OnStartup:         fs.SetContext,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

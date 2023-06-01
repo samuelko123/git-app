@@ -3,7 +3,7 @@ import { ButtonProps } from "./Button.d";
 import { Spinner } from "./Spinner";
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ children, isLoading, type, className, ...otherProps }, ref) => {
+  ({ children, isLoading, className, ...otherProps }, ref) => {
     return (
       <button
         ref={ref}
