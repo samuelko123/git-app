@@ -4,7 +4,6 @@ import (
 	"context"
 	"io"
 	"os"
-	"path/filepath"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -34,26 +33,6 @@ func (f *FS) IsDirEmpty(name string) bool {
 		return true
 	}
 	return false
-}
-
-func (f *FS) GetDirName(path string) string {
-	return filepath.Base(path)
-}
-
-func (f *FS) GetParentDir(path string) string {
-	return filepath.Dir(path)
-}
-
-func (f *FS) Exists(dirPath string) bool {
-	if _, err := os.Stat(dirPath); !os.IsNotExist(err) {
-		return true
-	}
-
-	return false
-}
-
-func (f *FS) PathJoin(path1 string, path2 string) string {
-	return filepath.Join(path1, path2)
 }
 
 func (f *FS) SetContext(ctx context.Context) {

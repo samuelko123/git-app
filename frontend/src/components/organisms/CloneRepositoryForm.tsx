@@ -1,13 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Clone } from "../../../wailsjs/go/backend/Git";
-import {
-  GetDirName,
-  GetUserHomeDir,
-  IsDirEmpty,
-  Exists,
-  PathJoin,
-  GetParentDir,
-} from "../../../wailsjs/go/backend/FS";
+import { GetUserHomeDir, IsDirEmpty } from "../../../wailsjs/go/backend/FS";
 import { getMessageFromError } from "../../utils/errors";
 import { TextField } from "../atoms/TextField";
 import { Alert } from "../atoms/Alert";
@@ -43,33 +36,6 @@ export const CloneRepositoryForm = () => {
     }
   };
 
-  const handleUrlChange = async (url: string) => {
-    setUrl(url);
-
-    if (!url.endsWith(".git")) {
-      return;
-    }
-
-    const folderName = await GetDirName(folder);
-    const repoName =
-      url
-        .split("/")
-        .at(-1)
-        ?.replace(/\.git$/, "") || "";
-
-    if (folderName === repoName) {
-      return;
-    }
-
-    if (await Exists(folder)) {
-      await handleFolderChange(await PathJoin(folder, repoName));
-    } else {
-      await handleFolderChange(
-        await PathJoin(await GetParentDir(folder), repoName)
-      );
-    }
-  };
-
   const handleFolderChange = async (folder: string) => {
     setFolder(folder);
 
@@ -93,7 +59,7 @@ export const CloneRepositoryForm = () => {
         name="url"
         label="Repository URL"
         value={url}
-        onChange={handleUrlChange}
+        onChange={setUrl}
         onError={handleError}
       />
       <TextField
