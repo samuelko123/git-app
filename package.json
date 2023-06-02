@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "dev": "wails dev",
+    "test": "cd e2e && npm test"
+  }
+}

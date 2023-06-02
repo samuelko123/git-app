@@ -13,10 +13,12 @@ export const CloneRepositoryForm = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [url, setUrl] = useState<string>("");
   const [folder, setFolder] = useState<string>("");
+  const [shouldShow, setShouldShow] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
       setFolder(await GetUserHomeDir());
+      setShouldShow(true);
     })();
   }, []);
 
@@ -51,6 +53,10 @@ export const CloneRepositoryForm = () => {
     const message = getMessageFromError(err);
     setErrorMessage(message);
   };
+
+  if (!shouldShow) {
+    return null;
+  }
 
   return (
     <Root onSubmit={handleSubmit} className="grid grid-cols-1 gap-8 w-[36rem]">
