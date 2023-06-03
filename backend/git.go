@@ -17,10 +17,19 @@ func NewGit(gitPath string) *Git {
 	}
 }
 
+func (g *Git) Init(dir string) error {
+	cmd := exec.Command(g.gitPath, "init", "--separate-git-dir", dir)
+	stdout, stderr := cmd.CombinedOutput()
+	return getError(cmd, stdout, stderr)
+}
+
 func (g *Git) Clone(url string, dir string) error {
 	cmd := exec.Command(g.gitPath, "clone", url, dir)
 	stdout, stderr := cmd.CombinedOutput()
+	return getError(cmd, stdout, stderr)
+}
 
+func getError(cmd *exec.Cmd, stdout []byte, stderr error) error {
 	if cmd.ProcessState == nil {
 		return parseStdErr(stderr)
 	}

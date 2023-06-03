@@ -10,13 +10,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const DEFAULT_URL = "https://github.com/go-git/go-git.git"
-
 func TestClone_HappyPath(t *testing.T) {
 	git := NewGit("git")
 	dir := getTempEmptyDir()
+	repo := createRepo(t)
 
-	err := git.Clone(DEFAULT_URL, dir)
+	err := git.Clone(repo, dir)
 
 	assert.Nil(t, err)
 }
@@ -24,19 +23,31 @@ func TestClone_HappyPath(t *testing.T) {
 func TestClone_NonEmptyDir(t *testing.T) {
 	git := NewGit("git")
 	dir := getTempNonEmptyDir(t)
+	repo := createRepo(t)
 
-	err := git.Clone(DEFAULT_URL, dir)
+	err := git.Clone(repo, dir)
 
 	assert.EqualError(t, err, "Destination path '"+dir+"' already exists and is not an empty directory.")
 }
 
 func TestClone_GitNotFound(t *testing.T) {
-	dir := getTempEmptyDir()
 	git := NewGit("no-git")
+	dir := getTempEmptyDir()
+	repo := createRepo(t)
 
-	err := git.Clone(DEFAULT_URL, dir)
+	err := git.Clone(repo, dir)
 
 	assert.EqualError(t, err, "\"no-git\": executable file not found in %PATH%")
+}
+
+func TestClone_RepoNotFound(t *testing.T) {
+	git := NewGit("git")
+	dir := getTempEmptyDir()
+	repo := getTempEmptyDir()
+
+	err := git.Clone(repo, dir)
+
+	assert.EqualError(t, err, "Could not read from remote repository.\n\nPlease make sure you have the correct access rights\nand the repository exists.")
 }
 
 func getTempEmptyDir() string {
@@ -49,5 +60,14 @@ func getTempNonEmptyDir(t *testing.T) string {
 	require.Nil(t, err)
 	err = os.Mkdir(filepath.Join(dir, uuid.NewString()), os.ModePerm)
 	require.Nil(t, err)
+	return dir
+}
+
+func createRepo(t *testing.T) string {
+	git := NewGit("git")
+	dir := getTempEmptyDir()
+	err := git.Init(dir)
+	require.Nil(t, err)
+
 	return dir
 }
