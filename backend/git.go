@@ -2,28 +2,52 @@ package backend
 
 import (
 	"errors"
-
-	"github.com/go-git/go-git/v5"
+	"os/exec"
+	"strings"
+	"unicode"
 )
 
 type Git struct {
-	fs *FS
+	gitPath string
 }
 
-func NewGit(fs *FS) *Git {
+func NewGit(gitPath string) *Git {
 	return &Git{
-		fs: fs,
+		gitPath: gitPath,
 	}
 }
 
 func (g *Git) Clone(url string, dir string) error {
-	if g.fs.IsDirEmpty(dir) == false {
-		return errors.New("Folder is not empty")
+	cmd := exec.Command(g.gitPath, "clone", url, dir)
+	stdout, stderr := cmd.CombinedOutput()
+
+	if cmd.ProcessState == nil {
+		return parseStdErr(stderr)
 	}
 
-	_, err := git.PlainClone(dir, false, &git.CloneOptions{
-		URL: url,
-	})
+	if cmd.ProcessState.Success() {
+		return nil
+	}
 
-	return err
+	return parseStdOut(stdout)
+}
+
+func parseStdErr(stderr error) error {
+	str := stderr.Error()
+	trimmed := strings.ReplaceAll(str, "exec: ", "")
+	return errors.New(capitalize(trimmed))
+}
+
+func parseStdOut(stdout []byte) error {
+	trimmed := strings.TrimSuffix(string(stdout), "\n")
+	arr := strings.Split(trimmed, "fatal: ")
+	err := arr[len(arr)-1]
+
+	return errors.New(capitalize(err))
+}
+
+func capitalize(str string) string {
+	runes := []rune(str)
+	runes[0] = unicode.ToUpper(runes[0])
+	return string(runes)
 }

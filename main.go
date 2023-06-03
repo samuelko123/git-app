@@ -15,7 +15,7 @@ var assets embed.FS
 func main() {
 	// Create an instance of the app structure
 	fs := backend.NewFS()
-	git := backend.NewGit(fs)
+	git := backend.NewGit("git")
 
 	// Create application with options
 	err := wails.Run(&options.App{

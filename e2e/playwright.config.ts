@@ -5,23 +5,30 @@ import path from "path";
 
 export default defineConfig({
   testDir: "./tests",
-  fullyParallel: false,
+  fullyParallel: true,
   forbidOnly: true,
   retries: 1,
-  workers: 1,
+  workers: 3,
   reporter: "list",
   use: {
     baseURL: "http://localhost:34115",
     trace: "off",
     video: {
       mode: "retain-on-failure",
-      size: { width: 640, height: 480 },
     },
   },
   projects: [
     {
+      name: "chrome",
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
       name: "edge",
       use: { ...devices["Desktop Edge"] },
+    },
+    {
+      name: "safari",
+      use: { ...devices["Desktop Safari"] },
     },
   ],
   outputDir: path.join(tmpdir(), randomUUID()),
