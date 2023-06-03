@@ -18,7 +18,7 @@ func NewGit(gitPath string) *Git {
 }
 
 func (g *Git) Init(dir string) error {
-	cmd := exec.Command(g.gitPath, "init", "--separate-git-dir", dir)
+	cmd := exec.Command(g.gitPath, "init", dir)
 	stdout, stderr := cmd.CombinedOutput()
 	return getError(cmd, stdout, stderr)
 }
