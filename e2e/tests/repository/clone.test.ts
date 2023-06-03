@@ -17,7 +17,7 @@ test("open and close dialog", async ({ page }) => {
   await expect(dialog).not.toBeVisible();
 });
 
-test("cloned successfully", async ({ page }) => {
+test("clone successfully", async ({ page }) => {
   await page.goto("http://localhost:34115/");
   await page.getByRole("button", { name: "Clone" }).click();
   const dialog = page.getByRole("dialog");
@@ -29,6 +29,24 @@ test("cloned successfully", async ({ page }) => {
   await page.getByRole("button", { name: "Clone" }).click();
 
   await expect(page.getByText("Cloned successfully")).toBeVisible();
+});
+
+test("display error message", async ({ page }) => {
+  await page.goto("http://localhost:34115/");
+  await page.getByRole("button", { name: "Clone" }).click();
+  const dialog = page.getByRole("dialog");
+
+  await dialog
+    .getByLabel("Repository URL")
+    .fill("https://github.com/samuelko123/no-such-repo.git");
+  await dialog.getByLabel("Folder Path").fill(getTempDir());
+  await page.getByRole("button", { name: "Clone" }).click();
+
+  await expect(
+    page.getByText(
+      "Repository 'https://github.com/samuelko123/no-such-repo.git/' not found"
+    )
+  ).toBeVisible();
 });
 
 function getTempDir() {
