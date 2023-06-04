@@ -1,6 +1,10 @@
-build
-node_modules
-frontend/dist
-frontend/wailsjs
+/build
+/frontend/dist
+/frontend/wailsjs
+/frontend/node_modules
+/e2e/test-results
+/e2e/playwright-report
+/e2e/playwright/.cache
+/e2e/node_modules
 package-lock.json
 package.json.md5
